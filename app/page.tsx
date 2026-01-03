@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Features from "@/components/Features";
 
 const translations = [
   { lang: "English", text: "AI-Powered Healthcare Support" },
@@ -87,6 +88,7 @@ export default function Hero() {
           Find Nearby Doctors
         </Button>
       </motion.div>
+      <Features/>
     </section>
   );
 }
