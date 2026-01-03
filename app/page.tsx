@@ -1,24 +1,68 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import Features from "@/components/Features";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const translations = [
-  { lang: "English", text: "AI-Powered Healthcare Support" },
-  { lang: "हिन्दी", text: "एआई-पावर्ड स्वास्थ्य समर्थन" },
-  { lang: "ગુજરાતી", text: "એઆઈ-સંપન્ન આરોગ્ય સહાય" },
-  { lang: "বাংলা", text: "এআই-চালিত স্বাস্থ্য সহায়তা" },
-  { lang: "मराठी", text: "एआय-सक्षम आरोग्य मदत" },
-  { lang: "தமிழ்", text: "ஏஐ இயக்கப்படும் ஆரோக்கிய ஆதரவு" },
+  { lang: "English", text: "Your Health, Our Priority" },
+  { lang: "हिन्दी", text: "आपका स्वास्थ्य, हमारी प्राथमिकता" },
+  { lang: "বাংলা", text: "আপনার স্বাস্থ্য, আমাদের অগ্রাধিকার" },
+  { lang: "ગુજરાતી", text: "તમારું સ્વાસ્થ્ય, અમારી પ્રાથમિકતા" },
+  { lang: "मराठी", text: "तुमचे आरोग्य, आमची प्राधान्यता" },
+  { lang: "தமிழ்", text: "உங்கள் ஆரோக்கியம், எங்கள் முன்னுரிமை" },
 ];
 
-export default function Hero() {
+function FloatingPaths({ position }: { position: number }) {
+  const paths = Array.from({ length: 36 }, (_, i) => ({
+    id: i,
+    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
+      380 - i * 5 * position
+    } -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${
+      152 - i * 5 * position
+    } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
+      684 - i * 5 * position
+    } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
+    color: `rgba(15,23,42,${0.1 + i * 0.03})`,
+    width: 0.5 + i * 0.03,
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      <svg
+        className="w-full h-full text-slate-950 dark:text-white"
+        viewBox="0 0 696 316"
+        fill="none"
+      >
+        <title>Background Paths</title>
+        {paths.map((path) => (
+          <motion.path
+            key={path.id}
+            d={path.d}
+            stroke="currentColor"
+            strokeWidth={path.width}
+            strokeOpacity={0.1 + path.id * 0.03}
+            initial={{ pathLength: 0.3, opacity: 0.6 }}
+            animate={{
+              pathLength: 1,
+              opacity: [0.3, 0.6, 0.3],
+              pathOffset: [0, 1, 0],
+            }}
+            transition={{
+              duration: 20 + Math.random() * 10,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+export default function BackgroundPaths() {
   const [index, setIndex] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,67 +72,49 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="container relative flex min-h-[calc(100vh-3.5rem)] max-w-screen-2xl flex-col items-center justify-center space-y-8 py-20 px-4 text-center sm:py-28 md:py-36">
-      {/* Floating AI Animation (Hidden on Mobile) */}
-      <motion.div
-        className="absolute top-10 right-10 hidden md:block"
-        initial={{ y: -20 }}
-        animate={{ y: [0, -10, 0] }}
-        transition={{
-          duration: 3,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "easeInOut",
-        }}
-      />
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-white dark:bg-neutral-950">
+      <div className="absolute inset-0">
+        <FloatingPaths position={1} />
+        <FloatingPaths position={-1} />
+      </div>
 
-      {/* Animated Heading */}
-      <motion.div
-        className="space-y-2 sm:space-y-4"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.h1
-          key={index}
-          className="pt-4 sm:pt-6 bg-gradient-to-br from-foreground from-30% via-foreground/90 to-foreground/70 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight transition-all duration-1000"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.8 }}
+      <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+          className="max-w-4xl mx-auto"
         >
-          {translations[index].text}
-        </motion.h1>
-        <p className="mx-auto max-w-[42rem] leading-normal text-muted-foreground text-sm sm:text-base md:text-lg sm:leading-7 md:leading-8 px-4 sm:px-0">
-          Get instant AI-driven health advice and find the nearest doctors and
-          healthcare professionals tailored to your condition.
-        </p>
-      </motion.div>
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold mb-8 tracking-tighter">
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.8 }}
+              className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-neutral-900 to-neutral-700/80 dark:from-white dark:to-white/80"
+            >
+              {translations[index].text}
+            </motion.span>
+          </h1>
 
-      {/* Buttons (Stack on Mobile) */}
-      <motion.div
-        className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none justify-center px-4 sm:px-0"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3 }}
-      >
-        <Button
-          size="lg"
-          className="w-full sm:w-auto text-sm sm:text-base"
-          onClick={() => router.push("/health-check")}
-        >
-          Check Your Health
-          <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full sm:w-auto text-sm sm:text-base"
-          onClick={() => router.push("/find-doctor")}
-        >
-          Find Nearby Doctors
-        </Button>
-      </motion.div>
-      <Features/>
-    </section>
+          <div className="inline-block group relative bg-gradient-to-b from-black/10 to-white/10 dark:from-white/10 dark:to-black/10 p-px rounded-2xl backdrop-blur-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Link href="/hero">
+              <Button
+                variant="ghost"
+                className="rounded-[1.15rem] px-8 py-6 text-lg font-semibold backdrop-blur-md bg-white/95 hover:bg-white/100 dark:bg-black/95 dark:hover:bg-black/100 text-black dark:text-white transition-all duration-300 group-hover:-translate-y-0.5 border border-black/10 dark:border-white/10 hover:shadow-md dark:hover:shadow-neutral-800/50"
+              >
+                <span className="opacity-90 group-hover:opacity-100 transition-opacity">
+                  Discover Excellence
+                </span>
+                <span className="ml-3 opacity-70 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-300">
+                  →
+                </span>
+              </Button>
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
